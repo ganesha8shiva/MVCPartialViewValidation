@@ -1,0 +1,70 @@
+﻿@section Scripts {
+ 
+    <script type="text/javascript">
+        $(function () {
+            $('.AddUser').on('click', function () {
+                $("#AddUserForm").dialog({
+                    autoOpen: true,
+                    //position: { my: "center", at: "top+350", of: window },
+                    width: 1000,
+                    //resizable: false,
+                    title: 'Add User Form',
+                    modal: true,
+                    open: function () {
+                        //var $formContainer = $('#AddUserForm');
+                        //var url = $formContainer.attr('data-url');
+
+                        $('#AddUserForm').load('@Url.Action("AddUserPartialView", "Home")', function () {
+
+                        var $form = $('#myForm');
+                        $.validator.unobtrusive.parse($form);
+
+                        $form.submit(function () {
+
+                            if ($form.valid()) {
+                                $.ajax({
+                                    url: "/Home/AddUserInfo",
+                                    async: true,
+                                    type: 'POST',
+                                    data: $(this).serialize(),
+                                    beforeSend: function (xhr, opts) {
+                                        //alert(this.url);
+                                    },
+                                    //contentType: 'application/json; charset=utf-8',
+                                    complete: function () {
+
+
+                                    },
+                                    success: function (data) {
+                                        //alert("success");
+                                        console.log(data);
+                                        $("#AddUserForm").dialog("close");
+                                    },
+                                    error: function (data) {
+                                        alert("some rutime error");
+                                        //console.log(data);
+                                    }
+                                });
+                            }
+                            return false;
+                        });
+
+                    });
+                },
+                buttons: {
+                    "Add User": function () {
+                        $("#myForm").submit();
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        });
+    });
+    </script>
+}
+<button class="AddUser">Add User</button>
+<div id="AddUserForm" data-url="@Url.Action("AddUserInfo", "Home", new { area = "Area Name" })"></div>
+@*<div id="AddUserForm"></div>*@
